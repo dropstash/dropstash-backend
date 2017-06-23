@@ -1,2 +1,7 @@
+
 def get_secret_key():
-    pass
+    # very raw dummy version
+    key = ''
+    with open('config/keys.cfg', 'r') as f:
+        key = f.read()
+    return key
