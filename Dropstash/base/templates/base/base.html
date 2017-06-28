@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css' %}"
     {% block style %}{% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js' %}"></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>
