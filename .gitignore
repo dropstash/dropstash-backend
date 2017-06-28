@@ -13,3 +13,6 @@ config/
 # Databases
 *.sqlite3
 
+# TODO files
+*.todo
+
