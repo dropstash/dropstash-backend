@@ -9,7 +9,7 @@ from datetime import datetime
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name='user', on_delete=models.CASCADE, primary_key=True)
     avatar = models.ImageField(verbose_name='avatar')
-    
+
     # @property
     # def stash(self):
 
@@ -23,6 +23,35 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class Cluster(models.Model):
+    headline = models.CharField(max_length=200, verbose_name='headline')
+    content = models.TextField(verbose_name='cluster overlay')
+
+
+class ClusterVote(models.Model):
+    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    cluster = models.ForeignKey(Cluster, verbose_name='linked cluster')
+    value = models.IntegerField(verbose_name='vote impact')
+
+    class Meta:
+        unique_together = ('user', 'cluster',)
+
+
+class ClusterComment(models.Model):
+    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    cluster = models.ForeignKey(Cluster, verbose_name='linked cluster')
+    content = models.TextField(verbose_name='comment')
+
+
+# class ClusterCommentVote(models.Model):
+#     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+#     cluster_comment = models.ForeignKey(ClusterComment, verbose_name='linked cluster comment')
+#     value = models.IntegerField(verbose_name='vote impact')
+#
+#     class Meta:
+#         unique_together = ('user', 'cluster_comment',)
 
 
 class Post(models.Model):
@@ -52,59 +81,34 @@ class Post(models.Model):
             # TODO: also reposts
 
 
+class PostVote(models.Model):
+    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name='linked post')
+    value = models.IntegerField(verbose_name='vote impact')
+
+    class Meta:
+        unique_together = ('user', 'post',)
+
+
 class PostComment(models.Model):
     post = models.ForeignKey(Post, verbose_name='linked post', on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
     message = models.TextField(verbose_name='comment')
 
 
-class PostVoteUp(models.Model):
-    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, verbose_name='linked post')
-
-    class Meta:
-        unique_together = ('user', 'post',)
-
-
-class PostVoteDown(models.Model):
-    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, verbose_name='linked post')
-
-    class Meta:
-        unique_together = ('user', 'post',)
+# class PostCommentVote(models.Model):
+#     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+#     post_comment = models.ForeignKey(Post, verbose_name='linked post comment')
+#     value = models.IntegerField(verbose_name='vote impact')
+#
+#     class Meta:
+#         unique_together = ('user', 'post_comment',)
 
 
 class Repost(models.Model):
     user = models.ForeignKey(User, verbose_name='reposted by', on_delete=models.CASCADE)
     post = models.ForeignKey(Post, verbose_name='post')
     publication_datetime = models.DateTimeField(verbose_name='publication datetime', default=datetime.now, blank=True)
-
-
-class Cluster(models.Model):
-    headline = models.CharField(max_length=200, verbose_name='headline')
-    content = models.TextField(verbose_name='cluster overlay')
-
-
-class ClusterComment(models.Model):
-    cluster = models.ForeignKey(Cluster, 'linked cluster', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, 'linked user', on_delete=models.CASCADE)
-    message = models.TextField(verbose_name='comment')
-
-
-class ClusterVoteUp(models.Model):
-    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-    cluster = models.ForeignKey(Cluster, verbose_name='linked post')
-
-    class Meta:
-        unique_together = ('user', 'cluster',)
-
-
-class ClusterVoteDown(models.Model):
-    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-    cluster = models.ForeignKey(Cluster, verbose_name='linked post')
-
-    class Meta:
-        unique_together = ('user', 'cluster',)
 
 
 class Tag(models.Model):
