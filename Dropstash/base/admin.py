@@ -1,7 +1,10 @@
 from django.contrib import admin
 
+from .models import Profile
 from .models import Cluster, ClusterVote, ClusterComment, ClusterCommentVote, ClusterTag
 from .models import Post, PostVote, PostComment, PostCommentVote, Repost
+
+admin.site.register(Profile)
 
 admin.site.register(Cluster)
 admin.site.register(ClusterVote)
