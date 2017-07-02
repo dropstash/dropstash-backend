@@ -25,9 +25,14 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
+class ClusterTag(models.Model):
+    title = models.CharField(max_length=200, verbose_name='tag')
+
+
 class Cluster(models.Model):
     headline = models.CharField(max_length=200, verbose_name='headline')
     content = models.TextField(verbose_name='cluster overlay')
+    tags = models.ManyToManyField(ClusterTag, verbose_name='cluster tags')
 
 
 class ClusterVote(models.Model):
@@ -109,8 +114,3 @@ class Repost(models.Model):
     user = models.ForeignKey(User, verbose_name='reposted by', on_delete=models.CASCADE)
     post = models.ForeignKey(Post, verbose_name='post')
     publication_datetime = models.DateTimeField(verbose_name='publication datetime', default=datetime.now, blank=True)
-
-
-class Tag(models.Model):
-    title = models.CharField(max_length=200, verbose_name='tag')
-
