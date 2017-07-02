@@ -46,6 +46,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     """
     #     send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def __str__(self):
+        if self.username:
+            return f'{self.username} [{self.email}]'
+        else:
+            return self.email
 
 
 class ClusterTag(models.Model):
