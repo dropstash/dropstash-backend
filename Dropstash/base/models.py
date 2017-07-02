@@ -1,28 +1,50 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.mail import send_mail
 
 from datetime import datetime
 
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, verbose_name='user', on_delete=models.CASCADE, primary_key=True)
-    avatar = models.ImageField(verbose_name='avatar')
-
-    # @property
-    # def stash(self):
+from .managers import UserManager
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(verbose_name='username', max_length=20)
+    email = models.EmailField(verbose_name='email address', unique=True)
+    first_name = models.CharField(verbose_name='first name', max_length=20, blank=True)
+    last_name = models.CharField(verbose_name='last name', max_length=20, blank=True)
+    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+    is_active = models.BooleanField(verbose_name='active status', default=True)
+    is_staff = models.BooleanField(verbose_name='staff status', default=False)
 
+    avatar = models.ImageField(verbose_name='avatar', upload_to='img/users/avatars/', null=True, blank=True)
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
+
+    def get_full_name(self):
+        """
+        :return: Returns the first_name plus the last_name, with a space in between.
+        """
+        full_name = f'{self.first_name} {self.last_name}'
+        return full_name
+
+    def get_short_name(self):
+        """
+        :return: Returns the short name for the user.
+        """
+        return self.first_name
+
+    # def email_user(self, subject, message, from_email=None, **kwargs):
+    #     """
+    #     Sends an email to this user.
+    #     """
+    #     send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
 class ClusterTag(models.Model):
@@ -66,7 +88,7 @@ class Post(models.Model):
     headline = models.CharField(max_length=200, verbose_name='headline')
     description = models.TextField(verbose_name='comment')
     content = models.TextField(verbose_name='quote')
-    preview_picture = models.ImageField(verbose_name='preview picture', blank=True)
+    preview_picture = models.ImageField(verbose_name='preview picture', upload_to='img/posts/preview/', blank=True)
 
     clusters = models.ManyToManyField(Cluster, verbose_name='used in clusters')
 
@@ -75,12 +97,18 @@ class Post(models.Model):
     publication_datetime = models.DateTimeField(verbose_name='publication datetime', default=datetime.now, blank=True)
 
     def publish(self):
+        """
+        :return: Marks the post published and sets its publication datetime
+        """
         if not self.is_published:
             self.is_published = True
             self.publication_datetime = datetime.now()
             # TODO: also reposts
 
     def conceal(self):
+        """
+        :return: Marks the post not published
+        """
         if self.is_published:
             self.is_published = False
             # TODO: also reposts
