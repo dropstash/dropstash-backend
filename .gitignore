@@ -10,8 +10,9 @@ __pycache__/
 # Project configuration files
 config/
 
-# Databases
+# Databases and migrations
 *.sqlite3
+**/migrations/
 
 # TODO files
 *.todo
