@@ -47,11 +47,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
+
 class ClusterTag(models.Model):
     title = models.CharField(max_length=200, verbose_name='tag')
 
 
 class Cluster(models.Model):
+    author = models.ForeignKey(User, verbose_name='author', on_delete=models.CASCADE)
     headline = models.CharField(max_length=200, verbose_name='headline')
     content = models.TextField(verbose_name='cluster overlay')
     tags = models.ManyToManyField(ClusterTag, verbose_name='cluster tags')
