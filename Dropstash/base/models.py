@@ -45,13 +45,13 @@ class ClusterComment(models.Model):
     content = models.TextField(verbose_name='comment')
 
 
-# class ClusterCommentVote(models.Model):
-#     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-#     cluster_comment = models.ForeignKey(ClusterComment, verbose_name='linked cluster comment')
-#     value = models.IntegerField(verbose_name='vote impact')
-#
-#     class Meta:
-#         unique_together = ('user', 'cluster_comment',)
+class ClusterCommentVote(models.Model):
+    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    cluster_comment = models.ForeignKey(ClusterComment, verbose_name='linked cluster comment')
+    value = models.IntegerField(verbose_name='vote impact')
+
+    class Meta:
+        unique_together = ('user', 'cluster_comment',)
 
 
 class Post(models.Model):
@@ -96,13 +96,13 @@ class PostComment(models.Model):
     message = models.TextField(verbose_name='comment')
 
 
-# class PostCommentVote(models.Model):
-#     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-#     post_comment = models.ForeignKey(Post, verbose_name='linked post comment')
-#     value = models.IntegerField(verbose_name='vote impact')
-#
-#     class Meta:
-#         unique_together = ('user', 'post_comment',)
+class PostCommentVote(models.Model):
+    user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    post_comment = models.ForeignKey(Post, verbose_name='linked post comment')
+    value = models.IntegerField(verbose_name='vote impact')
+
+    class Meta:
+        unique_together = ('user', 'post_comment',)
 
 
 class Repost(models.Model):
