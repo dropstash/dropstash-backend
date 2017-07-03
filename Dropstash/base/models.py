@@ -131,14 +131,14 @@ class PostVote(models.Model):
 
 
 class PostComment(models.Model):
-    post = models.ForeignKey(Post, verbose_name='linked post', on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name='linked post', on_delete=models.CASCADE)
     message = models.TextField(verbose_name='comment')
 
 
 class PostCommentVote(models.Model):
     user = models.ForeignKey(User, verbose_name='linked user', on_delete=models.CASCADE)
-    post_comment = models.ForeignKey(Post, verbose_name='linked post comment')
+    post_comment = models.ForeignKey(PostComment, verbose_name='linked post comment')
     value = models.IntegerField(verbose_name='vote impact')
 
     class Meta:
